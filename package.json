@@ -1,14 +1,17 @@
 {
   "name": "lostfound-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [],
-  "author": "",
+  "author": "Bhre Nabil Faeyza",
   "license": "ISC",
-  "description": "",
+  "description": "Lost and Found Pacil Backend REST API",
   "type": "module",
   "dependencies": {
     "@prisma/client": "^6.19.3",
