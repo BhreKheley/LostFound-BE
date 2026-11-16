@@ -1,5 +1,6 @@
 import { store } from "../store/index.js";
 import { AppError } from "../lib/AppError.js";
+import { uploadImageStream, deleteImage } from "../lib/cloudinary.js";
 
 export const getReportsService = async (query) => {
   return await store.listReports(query);
@@ -14,11 +15,29 @@ export const getReportByIdService = async (id) => {
 };
 
 export const createReportService = async (reportData, file) => {
-  // Pada Checkpoint 2 (STORE_DRIVER=memory), photoUrl diset null setelah validasi berkas berhasil
+  let uploadResult = null;
+
+  // 1. Jika ada berkas foto, unggah ke Cloudinary melalui streaming
+  if (file && file.buffer) {
+    uploadResult = await uploadImageStream(file.buffer, "lostfound");
+  }
+
   const dataToSave = {
     ...reportData,
-    photoUrl: null,
+    photoUrl: uploadResult ? uploadResult.secure_url : null,
+    photoPublicId: uploadResult ? uploadResult.public_id : null,
   };
 
-  return await store.createReport(dataToSave);
+  // 2. Simpan ke database dengan mekanisme rollback otomatis (T11)
+  try {
+    return await store.createReport(dataToSave);
+  } catch (err) {
+    if (uploadResult?.public_id) {
+      console.warn(
+        `[Rollback] Penyimpanan database gagal. Menghapus foto dari Cloudinary: ${uploadResult.public_id}`
+      );
+      await deleteImage(uploadResult.public_id);
+    }
+    throw err;
+  }
 };
