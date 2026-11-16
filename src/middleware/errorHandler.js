@@ -19,8 +19,8 @@ export const errorHandler = (err, req, res, next) => {
   if (err.code === "LIMIT_FILE_SIZE") {
     return res.status(413).json({
       error: {
-        code: "FILE_TOO_LARGE",
-        message: "Ukuran file foto melebihi batas maksimum 5MB",
+        code: "PAYLOAD_TOO_LARGE",
+        message: "Ukuran berkas photo melebihi batas maksimum 5 MB",
       },
     });
   }
@@ -29,7 +29,7 @@ export const errorHandler = (err, req, res, next) => {
   console.error("[Internal Server Error]:", err);
   return res.status(500).json({
     error: {
-      code: "INTERNAL_SERVER_ERROR",
+      code: "INTERNAL_ERROR",
       message: "Terjadi kesalahan internal pada server",
     },
   });
