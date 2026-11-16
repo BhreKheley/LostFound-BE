@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { env } from "./config/env.js";
+import { notFound } from "./middleware/notFound.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -13,7 +15,6 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // allow requests with no origin (like mobile apps, curl, postman)
       if (!origin || allowedOrigins.includes(origin) || env.FRONTEND_ORIGIN === "*") {
         return callback(null, true);
       }
@@ -33,5 +34,11 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// 404 handler for unmatched routes
+app.use(notFound);
+
+// Centralized error handler
+app.use(errorHandler);
 
 export default app;
