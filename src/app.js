@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { env } from "./config/env.js";
+import apiRoutes from "./routes/index.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -34,6 +35,10 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// Mount API routes (mendukung prefix /api maupun akses langsung /reports)
+app.use("/api", apiRoutes);
+app.use("/", apiRoutes);
 
 // 404 handler for unmatched routes
 app.use(notFound);
