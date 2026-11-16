@@ -1,11 +1,11 @@
 import { env } from "../config/env.js";
 import { memoryStore } from "./memory.store.js";
+import { prismaStore } from "./prisma.store.js";
 
 export const getStore = () => {
-  if (env.STORE_DRIVER === "memory") {
-    return memoryStore;
+  if (env.STORE_DRIVER === "prisma") {
+    return prismaStore;
   }
-  // Default fallback to memoryStore
   return memoryStore;
 };
 
