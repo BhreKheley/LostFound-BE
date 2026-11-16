@@ -1,92 +1,23 @@
 {
   "categories": [
-    {
-      "id": "ELECTRONICS",
-      "name": "Elektronik",
-      "description": "Laptop, HP, charger, mouse, earphone, powerbank"
-    },
-    {
-      "id": "TUMBLR",
-      "name": "Botol Minum / Tumblr",
-      "description": "Tumblr Corkcicle, Hydro Flask, Tupperware, botol minum"
-    },
-    {
-      "id": "WALLET",
-      "name": "Dompet & Uang",
-      "description": "Dompet kartu, dompet kulit, pouch uang tunai"
-    },
-    {
-      "id": "ID_CARD",
-      "name": "Kartu Identitas / KTM",
-      "description": "KTM Mahasiswa UI, KTP, SIM, kartu Flazz/e-Money"
-    },
-    {
-      "id": "KEYS",
-      "name": "Kunci",
-      "description": "Kunci kos, kunci motor/mobil, gantungan kunci"
-    },
-    {
-      "id": "CLOTHING",
-      "name": "Pakaian & Jaket",
-      "description": "Jaket bem/fakultas, sweater, hoodie, payung, topi"
-    },
-    {
-      "id": "STATIONERY",
-      "name": "Alat Tulis & Buku",
-      "description": "Buku catatan, binder, tempat pensil, kalkulator saintifik"
-    },
-    {
-      "id": "OTHER",
-      "name": "Lainnya",
-      "description": "Barang lain di luar kategori di atas"
-    }
+    { "id": 1, "name": "KTM dan kartu identitas" },
+    { "id": 2, "name": "Elektronik dan charger" },
+    { "id": 3, "name": "Dompet dan uang" },
+    { "id": 4, "name": "Botol minum" },
+    { "id": 5, "name": "Payung dan jas hujan" },
+    { "id": 6, "name": "Pakaian dan jaket" },
+    { "id": 7, "name": "Kunci" },
+    { "id": 8, "name": "Lain-lain" }
   ],
   "locations": [
-    {
-      "id": "LAB_KOMPUTER",
-      "name": "Lab Komputer (Gedung B)",
-      "description": "Lab Komputasi Dasar, Lab Software, Lab Multimedia"
-    },
-    {
-      "id": "PERPUSTAKAAN",
-      "name": "Perpustakaan (Gedung A Lt. 1)",
-      "description": "Area baca, meja diskusi kubikel, area loker perpustakaan"
-    },
-    {
-      "id": "KANTIN",
-      "name": "Kantin Fasilkom",
-      "description": "Meja makan kantin, counter makanan, area wastafel"
-    },
-    {
-      "id": "KELAS_A",
-      "name": "Ruang Kelas Gedung A",
-      "description": "Ruang 1101, 1102, 1201, 1202 Gedung A"
-    },
-    {
-      "id": "KELAS_B",
-      "name": "Ruang Kelas Gedung B",
-      "description": "Ruang 2101, 2201, 2301 Gedung B"
-    },
-    {
-      "id": "TOILET",
-      "name": "Toilet",
-      "description": "Toilet mahasiswa lantai 1, 2, atau 3"
-    },
-    {
-      "id": "LOBI_UTAMA",
-      "name": "Lobi Utama Fasilkom",
-      "description": "Lobi Gedung Baru, sofa tunggu, pos satpam depan"
-    },
-    {
-      "id": "MUSHOLA",
-      "name": "Mushola Lt. 2",
-      "description": "Tempat wudhu, rak sepatu mushola, ruang sholat"
-    },
-    {
-      "id": "OTHER",
-      "name": "Area Lainnya",
-      "description": "Parkiran, selasar antar gedung, taman fasilkom"
-    }
+    { "id": 1, "name": "Ruang kelas" },
+    { "id": 2, "name": "Laboratorium" },
+    { "id": 3, "name": "Perpustakaan" },
+    { "id": 4, "name": "Kantin" },
+    { "id": 5, "name": "Selasar gedung baru" },
+    { "id": 6, "name": "Lobi utama" },
+    { "id": 7, "name": "Toilet" },
+    { "id": 8, "name": "Mushola" },
+    { "id": 9, "name": "Area parkir" }
   ]
 }
-
