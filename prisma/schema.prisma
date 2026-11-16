@@ -1,0 +1,71 @@
+// Prisma Schema - Lost & Found Pacil
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ReportType {
+  LOST
+  FOUND
+}
+
+enum ContactMethod {
+  WHATSAPP
+  LINE
+  INSTAGRAM
+  EMAIL
+}
+
+enum ReportStatus {
+  ACTIVE
+  RESOLVED
+}
+
+model Category {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  reports Report[]
+
+  @@map("categories")
+}
+
+model Location {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  reports Report[]
+
+  @@map("locations")
+}
+
+model Report {
+  id             String        @id @default(uuid())
+  type           ReportType
+  title          String        @db.VarChar(100)
+  description    String        @db.VarChar(1000)
+  categoryId     Int
+  locationId     Int
+  locationDetail String?       @db.VarChar(100)
+  eventDate      DateTime      @db.Date
+  photoUrl       String?
+  photoPublicId  String?
+  contactMethod  ContactMethod
+  contactValue   String
+  reporterName   String?       @db.VarChar(50)
+  status         ReportStatus  @default(ACTIVE)
+  editTokenHash  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id])
+  location Location @relation(fields: [locationId], references: [id])
+
+  @@index([type, status, createdAt(sort: Desc)])
+  @@index([categoryId])
+  @@index([locationId])
+  @@map("reports")
+}

@@ -6,7 +6,8 @@
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:seed": "node prisma/seed.js"
   },
   "keywords": [],
   "author": "Bhre Nabil Faeyza",
