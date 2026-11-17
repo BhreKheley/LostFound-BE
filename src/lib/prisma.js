@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { env } from "../config/env.js";
 
-let prismaInstance = null;
+const globalForPrisma = globalThis;
 
 export const getPrismaClient = () => {
-  if (!prismaInstance) {
-    prismaInstance = new PrismaClient({
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = new PrismaClient({
       log: env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
     });
   }
-  return prismaInstance;
+  return globalForPrisma.prisma;
 };
 
 export const prisma = new Proxy(

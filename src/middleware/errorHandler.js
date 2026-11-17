@@ -27,10 +27,14 @@ export const errorHandler = (err, req, res, next) => {
 
   // 3. Fallback for unexpected internal errors
   console.error("[Internal Server Error]:", err);
-  return res.status(500).json({
+  const response = {
     error: {
       code: "INTERNAL_ERROR",
       message: "Terjadi kesalahan internal pada server",
     },
-  });
+  };
+  if (err.message) {
+    response.error.details = err.message;
+  }
+  return res.status(500).json(response);
 };
