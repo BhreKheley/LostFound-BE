@@ -28,7 +28,15 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health Check Endpoint
+// Root and Health Check Endpoints
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Lost & Found Pacil API is running!",
+    health: "/health",
+    reports: "/api/reports",
+  });
+});
+
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "ok",
