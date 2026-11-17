@@ -1,9 +1,11 @@
 # Kontrak REST API : Lost & Found Pacil (v1)
 
+- **Base URL Produksi (Vercel):** `https://lost-found-be-blush.vercel.app`
 - **Base URL Lokal:** `http://localhost:3000`
+- **Prefix Path:** Mendukung prefix standar `/api/...` maupun langsung `/...` (misal `https://lost-found-be-blush.vercel.app/api/reports` atau `/reports`).
 - **Format Respons:** JSON (`application/json`)
 - **Format Tanggal & Waktu:** Tanggal menggunakan `YYYY-MM-DD`; timestamp menggunakan ISO 8601 UTC (`YYYY-MM-DDTHH:mm:ss.sssZ`).
-- **CORS:** Mengizinkan asal dari `FRONTEND_ORIGIN` dan `http://localhost:5173` dengan metode `GET`, `POST`, `OPTIONS` serta header `Content-Type`.
+- **CORS:** Diizinkan untuk semua origin pengembang (`*`), `http://localhost:5173`, dan domain frontend Vercel dengan dukungan `credentials: true`.
 
 ---
 
@@ -256,3 +258,135 @@ Seluruh galat di semua endpoint dikembalikan dalam struktur JSON berikut:
 | `415` | `UNSUPPORTED_MEDIA_TYPE` | Tipe berkas `photo` bukan JPEG, PNG, atau WebP |
 | `502` | `UPLOAD_FAILED` | Layanan Cloudinary gagal mengunggah berkas |
 | `500` | `INTERNAL_ERROR` | Kesalahan internal server tak terduga |
+
+---
+
+## 4. Contoh Integrasi Frontend (React + Vite)
+
+Berikut contoh fungsi siap pakai yang dapat digunakan langsung oleh tim Frontend (Zaidan & Faris) di proyek React.
+
+### A. Konfigurasi Klien API (`src/services/api.js`)
+
+```javascript
+const BASE_URL = import.meta.env.VITE_API_URL || "https://lost-found-be-blush.vercel.app/api";
+
+// 1. Mengambil referensi Kategori dan Lokasi
+export const fetchCategories = async () => {
+  const res = await fetch(`${BASE_URL}/categories`);
+  const json = await res.json();
+  return json.data;
+};
+
+export const fetchLocations = async () => {
+  const res = await fetch(`${BASE_URL}/locations`);
+  const json = await res.json();
+  return json.data;
+};
+
+// 2. Mengambil daftar laporan dengan filter & paginasi
+export const fetchReports = async ({ q, type, categoryId, locationId, page = 1, limit = 12 } = {}) => {
+  const params = new URLSearchParams();
+  if (q) params.append("q", q);
+  if (type) params.append("type", type);
+  if (categoryId) params.append("categoryId", categoryId);
+  if (locationId) params.append("locationId", locationId);
+  params.append("page", page);
+  params.append("limit", limit);
+
+  const res = await fetch(`${BASE_URL}/reports?${params.toString()}`);
+  if (!res.ok) {
+    const errData = await res.json();
+    throw errData.error;
+  }
+  return await res.json(); // Mengembalikan { data: [...], meta: { page, limit, total, totalPages } }
+};
+
+// 3. Mengambil detail satu laporan
+export const fetchReportById = async (id) => {
+  const res = await fetch(`${BASE_URL}/reports/${id}`);
+  if (!res.ok) {
+    const errData = await res.json();
+    throw errData.error;
+  }
+  const json = await res.json();
+  return json.data;
+};
+
+// 4. Mengirim laporan baru (multipart/form-data)
+export const submitReport = async (formDataPayload) => {
+  // formDataPayload adalah instance dari new FormData()
+  const res = await fetch(`${BASE_URL}/reports`, {
+    method: "POST",
+    body: formDataPayload,
+    // CATATAN: Jangan set header Content-Type secara manual saat mengirim FormData!
+    // Browser akan otomatis menambahkan boundary yang benar.
+  });
+
+  const json = await res.json();
+  if (!res.ok) {
+    // Melempar error agar ditangkap blok catch di form handler
+    throw json.error;
+  }
+  return json.data; // Mengembalikan objek Report baru
+};
+```
+
+### B. Contoh Penggunaan di Formulir Lapor (`LaporForm.jsx`)
+
+```javascript
+import React, { useState } from "react";
+import { submitReport } from "../services/api";
+
+export function LaporForm() {
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFieldErrors({});
+    setGeneralError("");
+    setIsSubmitting(true);
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      const newReport = await submitReport(formData);
+      // Sukses: arahkan ke halaman detail laporan baru
+      window.location.href = `/laporan/${newReport.id}`;
+    } catch (err) {
+      if (err.code === "VALIDATION_ERROR" && Array.isArray(err.details)) {
+        // Petakan error per field ke state agar tampil di bawah masing-masing input
+        const mappedErrors = {};
+        err.details.forEach((d) => {
+          mappedErrors[d.field] = d.message;
+        });
+        setFieldErrors(mappedErrors);
+      } else {
+        setGeneralError(err.message || "Gagal mengirim laporan. Coba lagi nanti.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {generalError && <div className="alert-error">{generalError}</div>}
+      
+      {/* Input Nama Barang */}
+      <input name="title" placeholder="Nama barang" />
+      {fieldErrors.title && <span className="field-error">{fieldErrors.title}</span>}
+
+      {/* Input Berkas Foto (Opsional, maks 5MB) */}
+      <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" />
+      {fieldErrors.photo && <span className="field-error">{fieldErrors.photo}</span>}
+
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Mengirim..." : "Kirim Laporan"}
+      </button>
+    </form>
+  );
+}
+```
