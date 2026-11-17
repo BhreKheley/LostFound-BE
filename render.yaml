@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: lostfound-backend
+    env: node
+    plan: free
+    region: singapore
+    branch: checkpoint-3
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: STORE_DRIVER
+        value: prisma
+      - key: FRONTEND_ORIGIN
+        value: "*"
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        value: mock_cloud
+      - key: CLOUDINARY_API_KEY
+        value: mock_key
+      - key: CLOUDINARY_API_SECRET
+        value: mock_secret
+      - key: NEON_REALTIME_URL
+        sync: false
+      - key: NEON_REALTIME_SECRET
+        sync: false

@@ -1,4 +1,4 @@
-# Kontrak REST API — Lost & Found Pacil (v1)
+# Kontrak REST API : Lost & Found Pacil (v1)
 
 - **Base URL Lokal:** `http://localhost:3000`
 - **Format Respons:** JSON (`application/json`)
@@ -205,6 +205,25 @@ curl -X POST "http://localhost:3000/reports" \
 #### Respons `201 Created`
 - **Header:** `Location: /reports/{id}`
 - **Body:** `{ "data": { ...objek Report baru... } }`
+
+---
+
+### `GET /realtime/reports`
+Mengambil konfigurasi WebSocket Neon Realtime dan query ter-seal (sealed live query) untuk langganan data live query laporan aktif di sisi frontend tanpa polling.
+
+- **Respons `200 OK`:**
+  ```json
+  {
+    "enabled": true,
+    "url": "wss://ep-noisy-pond-a1op51hd.rt.c-1.ap-southeast-1.aws.neon.tech/",
+    "branch": "production",
+    "sealedQuery": {
+      "capability": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwidiI6Mn0...",
+      "queryFingerprint": "bc5110f3f66a767cb6f771c409959e5a026b636729b905784014e7bc58737c94",
+      "expiresAt": 1794852297000
+    }
+  }
+  ```
 
 ---
 
